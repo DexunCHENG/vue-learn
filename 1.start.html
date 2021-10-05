@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <div>{{msg}}</div>
+      <div>{{info}}</div>
+      <!-- value will be cacheed. After render once, always use the value in cache -->
+      <div v-once>{{info.name}}</div>
+      <!-- use innerHTML, will cause XSS attacks problem, do not used for user input-->
+      <div v-html="info.temp"></div>
+      <!-- v-if if do not the confition, dom do not exist -->
+      <!-- v-if decide whether dom exist, v-show decide the style of dom -->
+      <!-- v-show don't support template -->
+      <!-- template is a inner tag of vue, same as blank tag -->
+      <template v-if="info.ifFlag">
+        <div v-if="info.innerIfFlag">inner v-if</div>
+        <div>v-if</div>
+      </template>
+      <div v-else>v-else</div>
+      <!-- v-show  -->
+      <div v-show="info.showFlag">v-show</div>
+    </div>
+    <script src="node_modules/vue/dist/vue.js"></script>
+    <script>
+      let vm = new Vue({
+        el: '#app',
+        // template: '<div>hello vue</div>',
+        data: {
+          msg: 'hello msg',
+          info: {
+            name: 'vue name',
+            temp: '<h1>hello<h1/>',
+            ifFlag: true,
+            innerIfFlag: false,
+            showFlag: false,
+          },
+        },
+      });
+      // vue method:$el, $options, $set(), $nextTick(), $watch
+      // get element on vm
+      console.log('el', vm.$el);
+      // get vm options
+      console.log('options', vm.$options);
+      // add new property to data object
+      vm.$set(vm.info, 'address', 'set vue address');
+      // called after render dom render
+      // vue is async render
+      // put the intermediate update value into queue and only render the latest value
+      vm.info.name = 'update vue name';
+      vm.$nextTick(() => {
+        console.log('nextTick el', vm.$el);
+        // different value with line 29
+      });
+      // only get the lastest new value
+      vm.$watch('info.name', function (newValue, oldValue) {
+        console.log('info.name old', oldValue);
+        console.log('info.name new', newValue);
+      });
+
+      vm.info.name = 'update vue name secondly';
+    </script>
+  </body>
+</html>
