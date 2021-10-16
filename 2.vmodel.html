@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <h4>Input</h4>
+      <input type="text" :value="inputMsg" @input="handleInput" />
+      <input type="text" :value="inputMsg" @input="handleInput2($event, 'secondArg')" />
+      <input type="text" :value="inputMsg" @input="handleInput3" />
+      <!-- use v-model to do Two-way binding -->
+      <!-- same as :value + @input -->
+      <input type="text" v-model="inputMsg" />
+      <div>{{inputMsg}}</div>
+
+      <br />
+      <br />
+      <h4>Select</h4>
+      <select v-model="selectValue">
+        <option value="0" disabled>Please Select</option>
+        <option v-for="(option, key) of selectOptions" :value="option.value">{{option.label}}</option>
+      </select>
+      <div>{{selectValue}}</div>
+
+      <br />
+      <br />
+      <h4>Radio</h4>
+      <template v-for="(radio, index) of radioOptions">{{radio}}<input type="radio" v-model="radioValue" :value="radio" :key="`${radio}_${index}`" /></template>
+      <div>{{radioValue}}</div>
+
+      <br />
+      <br />
+      <h4>Checkbox</h4>
+      <!-- for single select -->
+      <h5>For single check</h5>
+      <input type="checkbox" v-model="checkboxValue" />Agree
+      <div>{{checkboxValue}}</div>
+
+      <h5>For multiple checks</h5>
+      <template v-for="(hobby, index) of hobbies"> {{hobby}} <input type="checkbox" v-model="checkboxValues" :value="hobby" :key="`${hobby}_${index}`" /></template>
+      <div>{{checkboxValues}}</div>
+
+      <h4>修饰符</h4>
+      <div>v-model.trim v-model.number</div>
+      <input type="text" v-model.number="inputNumMsg" /> {{typeof inputNumMsg}} {{inputNumMsg}}
+      <div>@keyup.ctrl @keyup.enter @keyup.esc</div>
+      <input type="text" @keyup.ctrl.enter="handleNumInput" />
+
+      <h4>样式绑定</h4>
+      <div class="abc" :class="{d: true}">样式绑定</div>
+      <div class="abc" :class="['d', 'e', f]">样式绑定</div>
+      <div style="color: red" :style="{background:'blue'}">样式绑定</div>
+      <div style="color: red" :style="[{background:'blue', color: 'yellow'}]">样式绑定</div>
+    </div>
+    <script src="node_modules/vue/dist/vue.js"></script>
+    <script>
+      let vm = new Vue({
+        data: {
+          f: 'g',
+          inputMsg: 'hello',
+          inputNumMsg: 0,
+          selectValue: 0,
+          selectOptions: [
+            { label: '狮子', value: 1 },
+            { label: '老虎', value: 2 },
+            { label: '豹子', value: 3 },
+          ],
+          radioValue: '',
+          radioOptions: ['Male', 'Female'],
+          checkboxValue: false,
+          checkboxValues: [],
+          hobbies: ['running', 'swimming', 'basketball'],
+        },
+        methods: {
+          handleInput(e) {
+            // this point to vm instance
+            console.log('handleInput this', this);
+            this.inputMsg = e.target.value;
+          },
+          // put other arguments
+          handleInput2(e, arg2) {
+            // this point to vm instance
+            console.log('handleInput2 this', this);
+            console.log('handleInput2 arg2', arg2);
+            this.inputMsg = e.target.value;
+          },
+          // wrong way
+          // this in arrow function will point to window here
+          handleInput3: () => {
+            console.log('handleInput3 this', this);
+            this.inputMsg = e.target.value;
+          },
+
+          handleNumInput() {
+            alert('Lucky');
+          },
+        },
+        // $mount() same as $el('#app')
+        // $mount() is convenient for later unit test
+      }).$mount('#app');
+    </script>
+  </body>
+</html>

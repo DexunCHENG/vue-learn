@@ -9,6 +9,7 @@
   <body>
     <div id="app">
       <div>{{msg}}</div>
+
       <div>{{info}}</div>
       <!-- value will be cacheed. After render once, always use the value in cache -->
       <div v-once>{{info.name}}</div>
@@ -25,6 +26,11 @@
       <div v-else>v-else</div>
       <!-- v-show  -->
       <div v-show="info.showFlag">v-show</div>
+      <!-- v-for -->
+      <div v-for="(fruit, index) in info.fruits" :key="`${index}_${fruit}`">{{index}}{{fruit}}</div>
+      <template v-for="(value, key) in info.fruitsObj">
+        <div :key="`${key}`">{{key}}:{{value}}</div>
+      </template>
     </div>
     <script src="node_modules/vue/dist/vue.js"></script>
     <script>
@@ -39,6 +45,8 @@
             ifFlag: true,
             innerIfFlag: false,
             showFlag: false,
+            fruits: ['苹果', '香蕉', '橙子'],
+            fruitsObj: { 苹果: '苹果醋', 香蕉: '香蕉奶昔', 橙子: '橙汁' },
           },
         },
       });
@@ -55,7 +63,7 @@
       vm.info.name = 'update vue name';
       vm.$nextTick(() => {
         console.log('nextTick el', vm.$el);
-        // different value with line 29
+        // different value with line48
       });
       // only get the lastest new value
       vm.$watch('info.name', function (newValue, oldValue) {
