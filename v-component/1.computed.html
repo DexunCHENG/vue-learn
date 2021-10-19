@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <h4>method getFullName()</h4>
+      <div>{{getFullName()}}</div>
+
+      <h4>computed fullName</h4>
+      <div>{{fullName}}</div>
+
+      <h4>watch fullName2</h4>
+      <div>{{fullName2}}</div>
+
+      <h4>msg</h4>
+      <div>{{msg}}</div>
+
+      <h4>Select All</h4>
+      <input type="checkbox" v-model="checkAll" />
+      <input type="checkbox" v-for="(check, key) in checks" v-model="check.value" />
+    </div>
+    <script src="../node_modules//vue//dist/vue.js"></script>
+    <!-- computed and method difference. computed can get value cache, method called everytime-->
+    <!-- computed and watch difference. watch support async function, computed not -->
+    <script>
+      let vm = new Vue({
+        el: '#app',
+        data: {
+          firstName: 'XIAO',
+          lastName: 'Pihai',
+          msg: 'hello',
+          fullName2: '',
+          checks: [
+            { value: true, id: 0 },
+            { value: false, id: 1 },
+            { value: true, id: 2 },
+          ],
+        },
+        // mounted() {
+        //   this.fullName2 = this.firstName + this.lastName;
+        // },
+        methods: {
+          // when change msg value, this method will be called
+          getFullName() {
+            console.log('method getFullName');
+            return this.firstName + this.lastName;
+          },
+          getFullName2() {
+            console.log('method getFullName2');
+            this.fullName2 = this.firstName + this.lastName;
+          },
+        },
+        watch: {
+          // will not process when first time rendring
+          // use mounted function or add {imediate: true}
+          firstName: {
+            handler(newValue) {
+              this.getFullName2();
+            },
+            immediate: true,
+          },
+          lastName(newValue) {
+            this.getFullName2();
+          },
+        },
+        computed: {
+          // when change msg value, this method will not be called
+          // if the dependent values not changed, will get value from cache
+          fullName() {
+            // use Object.definedProperty to realized
+            // get method, use cache
+            console.log('computed fullName');
+            return this.firstName + this.lastName;
+          },
+          checkAll: {
+            get() {
+              return this.checks.every((check) => check.value);
+            },
+            set(value) {
+              this.checks.forEach((check) => {
+                check.value = value;
+              });
+            },
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
