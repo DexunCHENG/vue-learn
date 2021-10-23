@@ -7,9 +7,11 @@
     <title>Document</title>
   </head>
   <body>
+    <!-- props $attrs -->
     <div id="app">
       <my-global-button></my-global-button>
       <my-local-button></my-local-button>
+      <my-button :msg="content" a="1" b="2"></my-button>
     </div>
     <script src="../node_modules//vue//dist//vue.js"></script>
     <script>
@@ -27,6 +29,7 @@
       });
       let vm = new Vue({
         el: '#app',
+        data: { content: 'click me' },
         components: {
           MyLocalButton: {
             data() {
@@ -38,6 +41,19 @@
               },
             },
             template: `<button v-on:click="handleLocalClick">{{msg}}</button>`,
+          },
+          MyButton: {
+            mounted() {
+              console.log(this.$attrs);
+            },
+            inheritAttrs: false,
+            template: `<div>my-button<my v-bind="$attrs"></my></div>`,
+            components: {
+              my: {
+                props: ['a', 'b'],
+                template: `<span>{{a}} {{b}}</span>`,
+              },
+            },
           },
         },
       });

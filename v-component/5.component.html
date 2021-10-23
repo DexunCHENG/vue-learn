@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- .native $listener $emit-->
+    <div id="app">
+      <!-- .native can pass methods to the outer layer of template -->
+      <my-simple-button @click.native="change"></my-simple-button>
+      <my-button @click="change" @mouseup="change"></my-button>
+    </div>
+    <script src="../node_modules//vue//dist//vue.js"></script>
+    <script>
+      let vm = new Vue({
+        el: '#app',
+        data: { content: 'click me' },
+        methods: {
+          change() {
+            alert('change function');
+          },
+        },
+        components: {
+          MySimpleButton: {
+            template: `<button>click me</button>`,
+          },
+          MyButton: {
+            mounted() {
+              console.log(this.$listeners);
+            },
+            // props 批量绑定 v-bind="$attrs"
+            // methods 批量绑定 v-on="$listeners"
+            template: `<div>
+                    <button @click="$listeners.click()">click me</button>
+                    <button @click="$emit('click')">click me</button>
+                    <button v-on="$listeners">click me</button>
+                  </div>`,
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

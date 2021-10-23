@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .title {
+        color: red;
+        font-size: 20px;
+        font-weight: bold;
+        border: 1px solid;
+        width: 75px;
+        text-align: center;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- $parent $children -->
+    <div id="app">
+      <collapse>
+        <template #items>
+          <collapse-item title="react" content="content 1"></collapse-item>
+          <collapse-item title="vue" content="content 1"></collapse-item>
+          <collapse-item title="angular" content="content 1"></collapse-item>
+        </template>
+      </collapse>
+    </div>
+    <script src="../node_modules//vue//dist//vue.js"></script>
+    <script>
+      Vue.component('Collapse', {
+        methods: {
+          cut(childId) {
+            this.$children.forEach((child) => {
+              if (child._uid !== childId) {
+                child.show = false;
+              }
+            });
+          },
+        },
+        template: `<div>
+          <slot name='items'></slot>
+          </div>`,
+      });
+      Vue.component('CollapseItem', {
+        props: ['title', 'content'],
+        data() {
+          return { show: false };
+        },
+        methods: {
+          change() {
+            this.show = !this.show;
+            this.$parent.cut(this._uid);
+          },
+        },
+        template: `<div>
+          <div class="title" @click="change">{{title}}</div>
+          <div v-show="show">{{content}}</div>
+          </div>`,
+      });
+      let vm = new Vue({
+        el: '#app',
+      });
+    </script>
+  </body>
+</html>
